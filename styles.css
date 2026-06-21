@@ -138,34 +138,6 @@ button {
   gap: 12px;
 }
 
-.file-status-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: rgba(0, 217, 196, 0.06);
-  border: 1px solid rgba(0, 217, 196, 0.15);
-  border-radius: 12px;
-  font-size: 0.9rem;
-  color: #00e8d4;
-}
-
-.file-status-unlink {
-  background: transparent;
-  border: 1px solid rgba(0, 217, 196, 0.25);
-  color: #00e8d4;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 160ms ease;
-}
-
-.file-status-unlink:hover {
-  background: rgba(0, 217, 196, 0.1);
-  border-color: rgba(0, 217, 196, 0.4);
-}
-
 .button,
 .icon-button {
   border: 1px solid transparent;

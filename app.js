@@ -23,8 +23,6 @@ const quantityFieldLabel = document.querySelector("#quantityFieldLabel");
 const symbolField = document.querySelector("#symbolField");
 const holdingsList = document.querySelector("#holdingsList");
 const refreshBtn = document.querySelector("#refreshBtn");
-const fileStatusBar = document.querySelector("#fileStatusBar");
-const fileStatusText = document.querySelector("#fileStatusText");
 const clearBtn = document.querySelector("#clearBtn");
 const statusPill = document.querySelector("#statusPill");
 const allocationPieChart = document.querySelector("#allocationPieChart");
@@ -123,10 +121,6 @@ function migrateHolding(holding) {
   };
 }
 
-function updateFileStatusUI() {
-  fileStatusBar.style.display = "none";
-}
-
 async function saveBackendData() {
   if (!backendAvailable) return;
   try {
@@ -145,7 +139,6 @@ async function saveBackendData() {
     });
   } catch {
     backendAvailable = false;
-    updateFileStatusUI();
   }
 }
 
@@ -1088,7 +1081,6 @@ async function initializeApp() {
 
   if (location.protocol.startsWith("http")) {
     backendAvailable = await loadBackendData();
-    updateFileStatusUI();
     if (backendAvailable) {
       render();
       setStatus("Connected to local data.json", "ok");
