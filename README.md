@@ -24,6 +24,8 @@ A simple front-end asset tracking app for:
 ## Notes
 
 - This is a static front-end prototype without a backend or database.
+- `data.json` is intentionally excluded from GitHub (`.gitignore`) because it is local runtime data.
+- If you run `server.ps1`, the app will auto-create `data.json` on first `GET /api/data`.
 - If a quote source is temporarily unavailable, the app keeps the latest known value.
 - The dashboard currently includes a history chart, stock allocation, market split, and an overall allocation pie chart.
 
