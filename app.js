@@ -124,12 +124,7 @@ function migrateHolding(holding) {
 }
 
 function updateFileStatusUI() {
-  if (backendAvailable) {
-    fileStatusText.textContent = "Data source: app/data.json via local server";
-    fileStatusBar.style.display = "flex";
-  } else {
-    fileStatusBar.style.display = "none";
-  }
+  fileStatusBar.style.display = "none";
 }
 
 async function saveBackendData() {
