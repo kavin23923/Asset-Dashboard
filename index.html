@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Asset tracker for cash, Taiwan stocks, and U.S. stocks." />
+    <title>Asset Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="backdrop backdrop-a"></div>
+    <div class="backdrop backdrop-b"></div>
+
+    <main class="shell">
+      <header class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">Asset Tracker</p>
+          <h1>Asset Dashboard</h1>
+          <p class="lede">
+            Automatically fetches the TWD/USD exchange rate, Taiwan stock prices, and U.S. stock quotes, then converts every position to TWD and calculates allocation percentages.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button id="refreshBtn" class="button primary">Refresh Data</button>
+          <button id="clearBtn" class="button ghost">Clear Data</button>
+        </div>
+        <div id="fileStatusBar" class="file-status-bar" style="display:none">
+          <span id="fileStatusText"></span>
+        </div>
+      </header>
+
+      <section class="summary-grid">
+        <article class="card metric">
+          <span class="metric-label">Total Assets (TWD)</span>
+          <strong id="totalTwd" class="metric-value">—</strong>
+          <span id="totalTwdHint" class="metric-note">Waiting for updates</span>
+        </article>
+        <article class="card metric">
+          <span class="metric-label">Total Assets (USD)</span>
+          <strong id="totalUsd" class="metric-value">—</strong>
+          <span id="totalUsdHint" class="metric-note">Converted using the live exchange rate</span>
+        </article>
+        <article class="card metric">
+          <span class="metric-label">USD/TWD Rate</span>
+          <strong id="fxRate" class="metric-value">—</strong>
+          <span id="fxUpdatedAt" class="metric-note">Not updated yet</span>
+        </article>
+      </section>
+
+      <section class="insights-grid">
+        <article class="card panel insight-panel allocation-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-label">Asset Allocation</p>
+              <h2>Holdings & Cash Distribution</h2>
+            </div>
+          </div>
+          <div class="allocation-layout" style="position:relative">
+            <div id="pieTooltip" class="pie-tooltip" style="display:none"></div>
+            <div class="allocation-charts-col">
+              <svg id="allocationPieChart" class="chart chart-large" viewBox="0 0 760 360" preserveAspectRatio="none" aria-label="Asset allocation pie chart"></svg>
+              <div class="growth-inline">
+                <p class="section-label" style="margin:16px 0 8px">Asset History</p>
+                <svg id="growthChart" class="chart chart-medium" viewBox="0 0 760 300" preserveAspectRatio="xMidYMid meet" aria-label="Asset growth curve chart"></svg>
+                <p id="growthChartLegend" class="growth-legend">No snapshots yet</p>
+              </div>
+            </div>
+            <div id="allocationPieLegend" class="allocation-list"></div>
+          </div>
+          <div class="split-section">
+            <p class="section-label">Stock vs ETF vs Cash</p>
+            <div id="splitBar" class="split-bar"></div>
+            <div id="splitLegend" class="split-legend"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="card panel">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Add Position</p>
+            </div>
+
+          </div>
+
+          <form id="assetForm" class="asset-form">
+            <label>
+              Type
+              <select id="assetType" name="assetType">
+                <option value="cash-twd">Cash - TWD</option>
+                <option value="cash-usd">Cash - USD</option>
+                <option value="tw-stock">Taiwan Stock - TWD</option>
+                <option value="tw-etf">Taiwan ETF - TWD</option>
+                <option value="us-stock">U.S. Stock - USD</option>
+                <option value="us-etf">U.S. ETF - USD</option>
+              </select>
+            </label>
+
+            <label id="symbolField">
+              Symbol
+              <input id="assetSymbol" name="assetSymbol" type="text" placeholder="e.g. 2330 or AAPL" />
+            </label>
+
+            <label>
+              <span id="quantityFieldLabel">Amount</span>
+              <input id="assetQuantity" name="assetQuantity" type="number" min="0" step="any" placeholder="e.g. 100 shares or 50000" required />
+            </label>
+
+            <div class="form-actions">
+              <button type="submit" class="button primary">Add Asset</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card panel">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Holdings</p>
+              <h2>Positions and Allocation</h2>
+            </div>
+            <span id="statusPill" class="pill pill-warm">Ready</span>
+          </div>
+
+          <div id="holdingsList" class="holdings-list"></div>
+        </article>
+      </section>
+
+    </main>
+
+    <template id="holdingTemplate">
+      <article class="holding-row">
+        <div class="holding-main">
+          <div>
+            <div class="holding-title">
+              <strong data-role="name"></strong>
+              <span class="type-tag" data-role="type"></span>
+            </div>
+          </div>
+          <div class="holding-actions">
+            <label class="inline-qty-editor">
+              <span data-role="qty-label">Qty</span>
+              <input type="number" min="0" step="any" data-action="edit-quantity" />
+            </label>
+            <button type="button" class="icon-button" data-action="update-quantity">Update</button>
+            <button type="button" class="icon-button danger" data-action="remove">Delete</button>
+          </div>
+        </div>
+
+        <div class="holding-stats">
+          <div>
+            <span class="stat-label" data-role="quantity-label">Amount</span>
+            <strong data-role="quantity"></strong>
+          </div>
+          <div>
+            <span class="stat-label">Latest Price</span>
+            <strong data-role="price"></strong>
+          </div>
+          <div>
+            <span class="stat-label">TWD Value</span>
+            <strong data-role="value-twd"></strong>
+          </div>
+          <div>
+            <span class="stat-label">Allocation</span>
+            <strong data-role="allocation"></strong>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
