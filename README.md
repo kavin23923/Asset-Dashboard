@@ -16,10 +16,12 @@ A simple front-end asset tracking app for:
 
 ## How to Use
 
-1. Open `index.html` in your browser.
-2. Add your cash, Taiwan stock, and U.S. stock positions.
-3. Click **Refresh Data** to sync exchange rates and quotes.
-4. Your data will stay saved in the browser.
+1. Double-click `Start App.bat` (recommended on Windows).
+2. This starts `server.ps1` and opens `http://localhost:8765/index.html`.
+3. On first run, the server auto-creates `data.json` when `/api/data` is requested.
+4. Add your cash, Taiwan stock, and U.S. stock positions.
+5. Click **Refresh Data** to sync exchange rates and quotes.
+6. Your data is saved locally (browser storage + local `data.json` when server mode is active).
 
 ## Notes
 
